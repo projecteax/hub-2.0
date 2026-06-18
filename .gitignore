@@ -3,6 +3,7 @@
 .next
 node_modules
 dist
+public/presentation
 coverage
 *.tsbuildinfo
 .DS_Store

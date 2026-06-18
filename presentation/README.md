@@ -17,20 +17,20 @@ npm install
 npm run dev
 ```
 
-Open **http://localhost:5173**
+Open **http://localhost:5173/presentation/**
 
-## Deploy
+## Production URL
 
-```bash
-npm run build
-```
+Shipped with the Hub app on Vercel:
 
-Deploy `dist/` to Vercel/Netlify (root directory: `presentation`).
+**https://hub-2-0.vercel.app/presentation/**
 
-Optional env:
+The root `npm run build` builds the deck into `public/presentation/` before Next.js.
+
+Optional env (set in Vercel at build time):
 
 ```env
-VITE_POC_URL=https://your-hub-poc-url.com
+VITE_POC_URL=https://hub-2-0.vercel.app
 ```
 
 ## Screenshots
