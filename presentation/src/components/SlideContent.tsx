@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -640,20 +640,41 @@ function OwnershipSlide({ slide }: Props) {
   );
 }
 
-function ScreenshotSlot({ id, label, caption }: { id: string; label: string; caption: string }) {
+const POC_URL = import.meta.env.VITE_POC_URL ?? "https://hub-2-0.vercel.app";
+
+type ScreenshotSlotData = { id: string; label: string; caption: string };
+
+function ScreenshotSlot({
+  id,
+  label,
+  caption,
+  onClick
+}: ScreenshotSlotData & { onClick?: () => void }) {
   const src = `${import.meta.env.BASE_URL}screenshots/${id}.png`;
   const [failed, setFailed] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-      <div className="flex aspect-video items-center justify-center bg-slate-900/50">
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={failed}
+      className="group w-full overflow-hidden rounded-xl border border-white/10 bg-white/5 text-left transition hover:border-indigo-400/40 hover:bg-white/10 disabled:cursor-default disabled:hover:border-white/10 disabled:hover:bg-white/5"
+    >
+      <div className="relative flex aspect-video items-center justify-center bg-slate-900/50">
         {!failed ? (
-          <img
-            src={src}
-            alt={label}
-            className="h-full w-full object-cover object-top"
-            onError={() => setFailed(true)}
-          />
+          <>
+            <img
+              src={src}
+              alt={label}
+              className="h-full w-full object-cover object-top transition group-hover:scale-[1.02]"
+              onError={() => setFailed(true)}
+            />
+            <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100">
+              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-slate-900">
+                Click to enlarge
+              </span>
+            </span>
+          </>
         ) : (
           <div className="flex flex-col items-center gap-2 p-4 text-center">
             <ImageIcon className="h-8 w-8 text-slate-600" />
@@ -666,11 +687,73 @@ function ScreenshotSlot({ id, label, caption }: { id: string; label: string; cap
         <p className="text-xs font-semibold text-slate-200">{label}</p>
         <p className="mt-1 text-[10px] leading-snug text-slate-500">{caption}</p>
       </div>
-    </div>
+    </button>
+  );
+}
+
+function ScreenshotLightbox({
+  slot,
+  onClose
+}: {
+  slot: ScreenshotSlotData;
+  onClose: () => void;
+}) {
+  const src = `${import.meta.env.BASE_URL}screenshots/${slot.id}.png`;
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [handleKeyDown]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="relative max-h-[92vh] w-full max-w-6xl"
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute -top-3 right-0 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 md:-right-3"
+          aria-label="Close"
+        >
+          <X className="h-5 w-5" />
+        </button>
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-2xl">
+          <img src={src} alt={slot.label} className="max-h-[80vh] w-full object-contain" />
+          <div className="border-t border-white/10 px-4 py-3 text-center">
+            <p className="text-sm font-semibold text-white">{slot.label}</p>
+            <p className="mt-1 text-xs text-slate-400">{slot.caption}</p>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
 function DemoSlide({ slide }: Props) {
+  const [expandedSlot, setExpandedSlot] = useState<ScreenshotSlotData | null>(null);
+
   return (
     <SlideFrame>
       <motion.div variants={staggerContainer} initial="hidden" animate="show" className="w-full">
@@ -679,7 +762,12 @@ function DemoSlide({ slide }: Props) {
         <motion.div className="mx-auto mt-6 grid max-w-4xl gap-3 md:grid-cols-3" variants={staggerContainer}>
           {slide.screenshotSlots?.map((slot, i) => (
             <motion.div key={slot.id} variants={fadeUp} custom={i + 3}>
-              <ScreenshotSlot id={slot.id} label={slot.label} caption={slot.caption} />
+              <ScreenshotSlot
+                id={slot.id}
+                label={slot.label}
+                caption={slot.caption}
+                onClick={() => setExpandedSlot(slot)}
+              />
             </motion.div>
           ))}
         </motion.div>
@@ -695,20 +783,21 @@ function DemoSlide({ slide }: Props) {
             </motion.li>
           ))}
         </motion.ul>
-        {import.meta.env.VITE_POC_URL ? (
-          <motion.a
-            href={import.meta.env.VITE_POC_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white"
-            variants={fadeUp}
-            custom={9}
-          >
-            Open live POC <ExternalLink className="h-4 w-4" />
-          </motion.a>
-        ) : null}
+        <motion.a
+          href={POC_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-400"
+          variants={fadeUp}
+          custom={9}
+        >
+          Open live POC <ExternalLink className="h-4 w-4" />
+        </motion.a>
         </SlideBody>
       </motion.div>
+      {expandedSlot ? (
+        <ScreenshotLightbox slot={expandedSlot} onClose={() => setExpandedSlot(null)} />
+      ) : null}
     </SlideFrame>
   );
 }

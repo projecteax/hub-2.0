@@ -543,16 +543,18 @@ export const SLIDES: Slide[] = [
     title: "Ownership & delegation",
     ownership: {
       own: [
-        "Product requirements & user journey",
-        "MVP scope & hybrid panel policy",
-        "Pilot success metrics & persona calibration thresholds",
-        "Pricing mechanics & escalation triggers"
+        "Client and expert journey: brief → report → verification",
+        "MVP scope, phased rollout, and what ships in the pilot",
+        "Trust UX: evidence tiers, attestation flow, audit trail",
+        "Pilot metrics, success criteria, and go/no-go gates",
+        "Feedback synthesis, roadmap priorities, cross-functional alignment"
       ],
       delegate: [
-        "Engineering sprints & RAG infrastructure",
-        "Legal / compliance review",
-        "Expert recruiting & payout operations",
-        "Sales account mapping & pilot recruitment"
+        "Engineering / AI: build, RAG, calibration pipeline, instrumentation",
+        "Strategic Insights: output quality bar, methodology, report curation",
+        "Operations: expert capacity, matching, async payout workflow",
+        "Sales: pilot account selection and SI handoff motion",
+        "Legal / Finance: compliance review and pricing/packaging decisions"
       ]
     }
   },
