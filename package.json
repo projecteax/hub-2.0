@@ -15,7 +15,9 @@
     "supabase:db:reset": "npx supabase db reset",
     "supabase:check": "node scripts/check-supabase-setup.mjs",
     "supabase:apply-expert": "node scripts/print-expert-migration.mjs",
-    "supabase:apply-expert-db": "node scripts/apply-expert-migration.mjs"
+    "supabase:apply-expert-db": "node scripts/apply-expert-migration.mjs",
+    "presentation:dev": "npm run dev --prefix presentation",
+    "presentation:build": "npm run build --prefix presentation"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

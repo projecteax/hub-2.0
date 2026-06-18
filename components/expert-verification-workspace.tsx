@@ -6,6 +6,7 @@ import {
   AlertCircle,
   ArrowLeft,
   CheckCircle2,
+  ClipboardCheck,
   Loader2,
   MessageSquare,
   ShieldCheck,
@@ -21,8 +22,17 @@ import {
   parseQuestionInsightSection,
   questionInsightSectionKey
 } from "@/lib/research/question-insights";
-import type { DbReportMetric, DbReportSection } from "@/lib/research/report-bundle";
-import type { ReportMetric } from "@/lib/research/report-types";
+import {
+  mapDbPersonaToView,
+  mapDbResponseToView,
+  type DbExpertPersona,
+  type DbExpertResponse,
+  type DbReportMetric,
+  type DbReportSection
+} from "@/lib/research/report-bundle";
+import type { DbFormAnswer } from "@/lib/research/server";
+import type { QuestionInsight, ReportMetric, VirtualExpertPersona, VirtualExpertResponse } from "@/lib/research/report-types";
+import type { ResearchBrief, ResearchScope } from "@/lib/types";
 import type { ReviewVerdict } from "@/lib/validation/types";
 
 type VerificationSection = {
@@ -31,6 +41,31 @@ type VerificationSection = {
   content: string;
   kind: "narrative" | "insight";
 };
+
+type ReviewQuestion = {
+  key: string;
+  text: string;
+  insight?: QuestionInsight;
+  responses: VirtualExpertResponse[];
+};
+
+const scopeLabels: Array<{ key: keyof ResearchScope; label: string }> = [
+  { key: "industry", label: "Industry" },
+  { key: "market", label: "Market / topic" },
+  { key: "geography", label: "Geography" },
+  { key: "companySize", label: "Company size" },
+  { key: "audience", label: "Audience" },
+  { key: "decisionStakes", label: "Decision stakes" },
+  { key: "timeline", label: "Timeline" },
+  { key: "researchType", label: "Research type" }
+];
+
+function fieldLabel(value: string) {
+  return value
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 function sectionLabel(key: string, title: string) {
   const labels: Record<string, string> = {
@@ -102,6 +137,20 @@ function mapMetrics(metrics: DbReportMetric[]): ReportMetric[] {
   });
 }
 
+function answerSummary(response: VirtualExpertResponse) {
+  if (response.questionType === "quantitative" && response.numericValue != null) {
+    return `${response.numericValue}${response.numericUnit ?? ""}`;
+  }
+
+  return response.openAnswer || response.purchaseDriver || response.keyConcern || "No answer captured.";
+}
+
+function expertLabel(experts: Array<VirtualExpertPersona & { dbId: string }>, personaId: string) {
+  const expert = experts.find((item) => item.id === personaId);
+  if (!expert) return personaId;
+  return expert.title ?? `${expert.seniority} · ${expert.segment}`;
+}
+
 const VERDICT_OPTIONS: Array<{
   value: ReviewVerdict;
   label: string;
@@ -135,8 +184,14 @@ const VERDICT_OPTIONS: Array<{
 export type ExpertVerificationWorkspaceProps = {
   assignmentId: string;
   projectTitle: string;
+  clientCompanyName: string | null;
+  brief: ResearchBrief | null;
+  clientFields: DbFormAnswer[];
   sections: DbReportSection[];
   metrics: DbReportMetric[];
+  questions: string[];
+  personas: DbExpertPersona[];
+  responses: DbExpertResponse[];
   defaultName: string;
   defaultCredentials: string;
 };
@@ -144,13 +199,49 @@ export type ExpertVerificationWorkspaceProps = {
 export function ExpertVerificationWorkspace({
   assignmentId,
   projectTitle,
+  clientCompanyName,
+  brief,
+  clientFields,
   sections,
   metrics,
+  questions,
+  personas,
+  responses,
   defaultName,
   defaultCredentials
 }: ExpertVerificationWorkspaceProps) {
+  const personaKeyById = useMemo(() => new Map(personas.map((persona) => [persona.id, persona.persona_key])), [personas]);
+  const expertViews = useMemo(
+    () => personas.map((persona) => mapDbPersonaToView(persona) as VirtualExpertPersona & { dbId: string }),
+    [personas]
+  );
+  const responseViews = useMemo(
+    () => responses.map((response) => mapDbResponseToView(response, personaKeyById, questions)),
+    [responses, personaKeyById, questions]
+  );
+  const questionInsights = useMemo(
+    () =>
+      sections
+        .map((section) => parseQuestionInsightSection(section))
+        .filter((insight): insight is QuestionInsight => insight != null),
+    [sections]
+  );
+  const reviewQuestions = useMemo<ReviewQuestion[]>(
+    () =>
+      questions.map((question, index) => {
+        const key = `q-${index}`;
+        return {
+          key,
+          text: question,
+          insight: questionInsights.find((insight) => insight.questionKey === key),
+          responses: responseViews.filter((response) => response.questionKey === key)
+        };
+      }),
+    [questions, questionInsights, responseViews]
+  );
+
   const verificationSections = useMemo<VerificationSection[]>(() => {
-    const narrative = sections
+    return sections
       .filter((section) => !isQuestionInsightSection(section.section_key))
       .map((section) => ({
         key: section.section_key,
@@ -158,22 +249,19 @@ export function ExpertVerificationWorkspace({
         content: section.content,
         kind: "narrative" as const
       }));
-
-    const insights = sections
-      .map((section) => parseQuestionInsightSection(section))
-      .filter((insight) => insight != null)
-      .map((insight) => ({
-        key: questionInsightSectionKey(insight.questionKey),
-        title: insight.headline,
-        content: `${insight.questionText}\n\n${insight.summary}`,
-        kind: "insight" as const
-      }));
-
-    return [...narrative, ...insights];
   }, [sections]);
 
   const chartMetrics = useMemo(() => mapMetrics(metrics), [metrics]);
   const statMetrics = chartMetrics.filter((m) => m.chartType === "stat" || m.data.length === 1).slice(0, 3);
+  const scopeValues = useMemo(
+    () =>
+      brief
+        ? scopeLabels
+            .map((item) => ({ label: item.label, value: brief.scope[item.key] }))
+            .filter((item) => item.value?.trim())
+        : [],
+    [brief]
+  );
 
   const [activeKey, setActiveKey] = useState(verificationSections[0]?.key ?? "");
   const [verdict, setVerdict] = useState<ReviewVerdict>("verified");
@@ -181,19 +269,30 @@ export function ExpertVerificationWorkspace({
   const [attestedCredentials, setAttestedCredentials] = useState(defaultCredentials);
   const [generalComment, setGeneralComment] = useState("");
   const [sectionComments, setSectionComments] = useState<Record<string, string>>({});
+  const [questionComments, setQuestionComments] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const activeSection = verificationSections.find((section) => section.key === activeKey) ?? verificationSections[0];
 
   function buildFlags() {
-    return verificationSections
+    const sectionFlags = verificationSections
       .map((section) => ({
         sectionKey: section.key,
         flagType: "section_comment",
         comment: (sectionComments[section.key] ?? "").trim()
       }))
       .filter((flag) => flag.comment.length > 0);
+
+    const questionFlags = reviewQuestions
+      .map((question) => ({
+        sectionKey: questionInsightSectionKey(question.key),
+        flagType: "question_evidence_comment",
+        comment: (questionComments[question.key] ?? "").trim()
+      }))
+      .filter((flag) => flag.comment.length > 0);
+
+    return [...questionFlags, ...sectionFlags];
   }
 
   function submit() {
@@ -205,7 +304,7 @@ export function ExpertVerificationWorkspace({
 
     const flags = buildFlags();
     if (verdict === "verified_with_flags" && flags.length === 0 && !generalComment.trim()) {
-      setError("Add a section note or general comment when verifying with concerns.");
+      setError("Add a question note, section note, or general comment when verifying with concerns.");
       return;
     }
 
@@ -339,10 +438,155 @@ export function ExpertVerificationWorkspace({
             </div>
           ) : null}
 
+          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-100 bg-gradient-to-r from-indigo-50 to-white px-5 py-4">
+              <div className="flex items-center gap-2">
+                <ClipboardCheck className="h-5 w-5 text-indigo-600" />
+                <div>
+                  <p className="text-sm font-semibold text-slate-950">Client brief</p>
+                  <p className="text-xs text-slate-500">Context used to generate the report you are validating.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4 p-5">
+              <div className="grid gap-3 md:grid-cols-3">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Project</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-950">{projectTitle}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Client company</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-950">{clientCompanyName ?? "Client organization"}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Review task</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-950">Validate evidence and attest sections</p>
+                </div>
+              </div>
+
+              {brief ? (
+                <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Research objective</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-950">{brief.objective}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{brief.canonicalQuestion}</p>
+                </div>
+              ) : null}
+
+              {scopeValues.length > 0 ? (
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                  {scopeValues.map((field) => (
+                    <div className="rounded-lg border border-slate-200 px-3 py-2" key={field.label}>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{field.label}</p>
+                      <p className="mt-1 text-xs font-medium leading-5 text-slate-800">{field.value}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {clientFields.length > 0 ? (
+                <details className="rounded-xl border border-slate-200 bg-white">
+                  <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-900">
+                    Client form answers ({clientFields.length})
+                  </summary>
+                  <div className="grid gap-3 border-t border-slate-100 p-4 md:grid-cols-2">
+                    {clientFields.map((field) => (
+                      <div className="rounded-lg bg-slate-50 p-3" key={field.id}>
+                        <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                          {fieldLabel(field.field_key)}
+                        </p>
+                        <p className="mt-1 text-xs font-medium text-slate-700">{field.question_text}</p>
+                        <p className="mt-2 text-sm leading-6 text-slate-900">{field.answer_text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              ) : null}
+            </div>
+          </section>
+
+          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-100 px-5 py-4">
+              <p className="text-sm font-semibold text-slate-900">Questions to validate</p>
+              <p className="text-xs text-slate-500">Check the question, synthesis, and underlying answers before attesting the report.</p>
+            </div>
+
+            {reviewQuestions.length > 0 ? (
+              <div className="grid gap-3 p-5">
+                {reviewQuestions.map((question, index) => (
+                  <article className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4" key={question.key}>
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600">Question {index + 1}</p>
+                        <h2 className="mt-1 text-base font-semibold leading-6 text-slate-950">{question.text}</h2>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge tone="slate">{question.responses.length} answers</Badge>
+                        {question.insight ? (
+                          <Badge tone={question.insight.questionType === "quantitative" ? "sky" : "emerald"}>
+                            {question.insight.questionType}
+                          </Badge>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {question.insight ? (
+                      <div className="mt-3 rounded-xl border border-indigo-100 bg-white p-3">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Synthesis</p>
+                        <p className="mt-1 text-sm font-semibold text-slate-950">{question.insight.headline}</p>
+                        <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-slate-600">{question.insight.summary}</p>
+                      </div>
+                    ) : null}
+
+                    <details className="mt-3 rounded-xl border border-slate-200 bg-white">
+                      <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-slate-900">
+                        View panel answers
+                      </summary>
+                      <div className="grid gap-3 border-t border-slate-100 p-3 md:grid-cols-2">
+                        {question.responses.length > 0 ? (
+                          question.responses.map((response) => (
+                            <div
+                              className="rounded-lg border border-slate-200 bg-white p-3"
+                              key={`${response.personaId}-${response.questionKey}`}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <p className="text-sm font-semibold text-slate-900">
+                                  {expertLabel(expertViews, response.personaId)}
+                                </p>
+                                <Badge tone="slate">{Math.round(response.confidence * 100)}%</Badge>
+                              </div>
+                              <p className="mt-2 text-sm leading-6 text-slate-700">{answerSummary(response)}</p>
+                              {response.reasoningSummary ? (
+                                <p className="mt-2 text-xs leading-5 text-slate-500">{response.reasoningSummary}</p>
+                              ) : null}
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-sm text-slate-500">No panel answers were saved for this question.</p>
+                        )}
+                      </div>
+                    </details>
+
+                    <Textarea
+                      className="mt-3 min-h-[64px] resize-y border-slate-200 bg-white text-sm"
+                      placeholder="Optional note: wrong framing, unsupported synthesis, missing context…"
+                      value={questionComments[question.key] ?? ""}
+                      onChange={(e) => setQuestionComments((current) => ({ ...current, [question.key]: e.target.value }))}
+                    />
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="p-5 text-sm text-slate-500">No research questions are available for this review.</p>
+            )}
+          </section>
+
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div className="border-b border-slate-100 px-4 py-3">
-              <p className="text-sm font-semibold text-slate-900">Report sections</p>
-              <p className="text-xs text-slate-500">Select a section to review. Add a note only where needed.</p>
+              <p className="text-sm font-semibold text-slate-900">Report sections to attest</p>
+              <p className="text-xs text-slate-500">
+                After reviewing the questions and answers, attest the report narrative section by section.
+              </p>
             </div>
 
             <div className="flex flex-col lg:flex-row">
@@ -387,7 +631,7 @@ export function ExpertVerificationWorkspace({
                       <span className="font-normal text-slate-400">(optional)</span>
                     </label>
                     <Textarea
-                      className="mt-2 min-h-[88px] border-slate-200 text-sm"
+                      className="mt-2 min-h-[88px] resize-y border-slate-200 text-sm"
                       placeholder="Flag inaccuracies, missing context, or add expert commentary…"
                       value={sectionComments[activeSection.key] ?? ""}
                       onChange={(e) =>

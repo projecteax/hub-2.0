@@ -3,6 +3,7 @@ import { ExpertVerificationSubmitted } from "@/components/expert-verification-su
 import { ExpertVerificationWorkspace } from "@/components/expert-verification-workspace";
 import { getExpertProfile, getUserProfile, isExpertRole } from "@/lib/auth/profile";
 import { getReportBundle } from "@/lib/research/report-bundle";
+import { listProjectQuestionTexts } from "@/lib/research/server";
 import { getAssignmentForExpert } from "@/lib/validation/server";
 import { requireUser } from "@/lib/supabase/require-user";
 
@@ -30,9 +31,17 @@ export default async function ExpertReviewPage({ params }: { params: Promise<{ a
 
   const project = request.research_projects;
   const bundle = await getReportBundle(supabase, project.id);
+  const { data: projectContext } = await supabase
+    .from("research_projects")
+    .select("organizations(name)")
+    .eq("id", project.id)
+    .maybeSingle();
 
   const sections = bundle?.reportSections ?? [];
   const metrics = bundle?.reportMetrics ?? [];
+  const questions = await listProjectQuestionTexts(supabase, project.id);
+  const organization = projectContext?.organizations as { name?: string } | { name?: string }[] | null;
+  const clientCompanyName = Array.isArray(organization) ? organization[0]?.name : organization?.name;
 
   const flags = (assignment.validation_flags ?? []) as Array<{
     section_key: string | null;
@@ -59,8 +68,14 @@ export default async function ExpertReviewPage({ params }: { params: Promise<{ a
     <ExpertVerificationWorkspace
       assignmentId={assignmentId}
       projectTitle={project.title}
+      clientCompanyName={clientCompanyName ?? null}
+      brief={bundle?.brief?.structured_brief ?? null}
+      clientFields={bundle?.adaptiveAnswers ?? []}
       sections={sections}
       metrics={metrics}
+      questions={questions}
+      personas={bundle?.expertPersonas ?? []}
+      responses={bundle?.expertResponses ?? []}
       defaultName={profile.full_name ?? ""}
       defaultCredentials={expertProfile?.credentials ?? ""}
     />
