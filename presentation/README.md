@@ -35,7 +35,7 @@ VITE_POC_URL=https://hub-2-0.vercel.app
 
 ## Screenshots
 
-Drop PNGs into `public/screenshots/` — see that folder's README.
+Drop PNGs into `public/screenshots/`; see that folder's README.
 
 ## Controls
 

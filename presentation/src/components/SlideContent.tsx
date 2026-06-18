@@ -641,7 +641,7 @@ function OwnershipSlide({ slide }: Props) {
 }
 
 function ScreenshotSlot({ id, label, caption }: { id: string; label: string; caption: string }) {
-  const src = `/screenshots/${id}.png`;
+  const src = `${import.meta.env.BASE_URL}screenshots/${id}.png`;
   const [failed, setFailed] = useState(false);
 
   return (
@@ -662,7 +662,10 @@ function ScreenshotSlot({ id, label, caption }: { id: string; label: string; cap
           </div>
         )}
       </div>
-      <p className="border-t border-white/5 px-3 py-2 text-center text-xs text-slate-400">{label}</p>
+      <div className="border-t border-white/5 px-3 py-2 text-center">
+        <p className="text-xs font-semibold text-slate-200">{label}</p>
+        <p className="mt-1 text-[10px] leading-snug text-slate-500">{caption}</p>
+      </div>
     </div>
   );
 }

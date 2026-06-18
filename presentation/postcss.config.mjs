@@ -1,4 +1,4 @@
-/** Presentation uses @tailwindcss/vite — no PostCSS plugins needed. */
+/** Presentation uses @tailwindcss/vite; no PostCSS plugins needed. */
 export default {
   plugins: {}
 };

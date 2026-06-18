@@ -110,7 +110,7 @@ export const SLIDES: Slide[] = [
     title: "Presentation outline",
     bullets: [
       "User feedback synthesis",
-      "Product plan — MVP, credibility, persona calibration",
+      "Product plan: MVP, credibility, persona calibration",
       "Quarterly product roadmap",
       "Cross-functional execution",
       "Prototype walkthrough"
@@ -122,7 +122,7 @@ export const SLIDES: Slide[] = [
     layout: "statement",
     eyebrow: "Context",
     title: "Hub as a self-serve research platform",
-    subtitle: "Synthetic + human research — fast exploration, verified escalation.",
+    subtitle: "Synthetic + human research for fast exploration and verified escalation.",
     bullets: [
       "Scope the question with adaptive intake",
       "Deliver a synthesized memo with clear evidence tier",
@@ -136,8 +136,8 @@ export const SLIDES: Slide[] = [
     eyebrow: "Business data",
     title: "Why self-serve matters now",
     stats: [
-      { value: "34%", label: "Lost deals — timeline", accent: "rose" },
-      { value: "24%", label: "Lost deals — budget", accent: "amber" },
+      { value: "34%", label: "Lost deals: timeline", accent: "rose" },
+      { value: "24%", label: "Lost deals: budget", accent: "amber" },
       { value: "+44%", label: "Enterprise Tech bookings YoY", accent: "emerald" }
     ]
   },
@@ -147,15 +147,15 @@ export const SLIDES: Slide[] = [
     layout: "evaluation",
     eyebrow: "Feedback synthesis",
     title: "How 14 user voices were weighed",
-    subtitle: "Pain mapped to win/loss data — not a popularity vote",
+    subtitle: "Pain mapped to win/loss data, not a popularity vote",
     evaluationSteps: [
       {
         label: "Group by decision stakes",
-        body: "Fast explorers (Sarah, Natalie) vs. board-grade validators (Catherine, Priya, James) — same product, different moments"
+        body: "Fast explorers (Sarah, Natalie) vs. board-grade validators (Catherine, Priya, James): same product, different moments"
       },
       {
         label: "Align with revenue data",
-        body: "58% of losses tied to speed and budget — priority on recoverable deal patterns"
+        body: "58% of losses tied to speed and budget, with priority on recoverable deal patterns"
       },
       {
         label: "Apply business filters",
@@ -168,12 +168,12 @@ export const SLIDES: Slide[] = [
     section: "Feedback",
     layout: "ladder",
     eyebrow: "Core insight",
-    title: "The Speed–Trust Ladder",
-    subtitle: "Different users sit on different rungs — the product must serve both",
+    title: "The Speed-Trust Ladder",
+    subtitle: "Different users sit on different rungs, and the product must serve both",
     items: [
-      { icon: Zap, title: "Explore", body: "Directional answer in 48h — internal planning", tag: "Sarah · Natalie" },
+      { icon: Zap, title: "Explore", body: "Directional answer in 48h for internal planning", tag: "Sarah · Natalie" },
       { icon: ShieldCheck, title: "Validate", body: "Expert attestation before the board", tag: "Catherine · Priya" },
-      { icon: TrendingUp, title: "Deep dive", body: "Full SI engagement — $30K–$150K+", tag: "Existing motion" }
+      { icon: TrendingUp, title: "Deep dive", body: "Full SI engagement: $30K-$150K+", tag: "Existing motion" }
     ]
   },
   {
@@ -186,13 +186,13 @@ export const SLIDES: Slide[] = [
       {
         icon: Sparkles,
         title: "Adaptive scoping",
-        body: "A thinking partner — not a static form. Marcus & Natalie need fast hypothesis tests.",
+        body: "A thinking partner, not a static form. Marcus & Natalie need fast hypothesis tests.",
         tag: "Build"
       },
       {
         icon: FileSearch,
         title: "Audit trail",
-        body: "Every claim traceable — sources, credentials, evidence labels. Priya & Greg won't defend data without it.",
+        body: "Every claim traceable through sources, credentials, and evidence labels. Priya & Greg won't defend data without it.",
         tag: "Build"
       },
       {
@@ -210,7 +210,7 @@ export const SLIDES: Slide[] = [
     eyebrow: "Product architecture",
     title: "Three pillars",
     items: [
-      { icon: Sparkles, title: "Adaptive scoping", body: "AI clarifying questions — credible today", tag: "Pillar I ✓" },
+      { icon: Sparkles, title: "Adaptive scoping", body: "AI clarifying questions, credible today", tag: "Pillar I ✓" },
       { icon: Database, title: "NewtonX-grounded synthesis", body: "RAG on proprietary reports + citations", tag: "Pillar II · Phase 1" },
       { icon: Users, title: "Expert verification", body: "Named experts attest with credentials", tag: "Pillar III ✓ POC" }
     ]
@@ -220,7 +220,7 @@ export const SLIDES: Slide[] = [
     section: "Product",
     layout: "split",
     eyebrow: "MVP scope",
-    title: "Phase 1 pilot — in and out of scope",
+    title: "Phase 1 pilot: in and out of scope",
     columns: [
       {
         heading: "In scope",
@@ -252,19 +252,19 @@ export const SLIDES: Slide[] = [
     section: "Prototype",
     layout: "poc-honest",
     eyebrow: "Prototype assessment",
-    title: "What the POC proves — and what it doesn't",
-    subtitle: "Flow is validated; credibility is not — yet",
+    title: "What the POC proves and what it doesn't",
+    subtitle: "Flow is validated; credibility still needs proof",
     pocStatus: {
       proves: [
         "End-to-end journey: scope → brief → report → verify",
-        "Adaptive forms — AI asks the right clarifiers",
-        "Expert attestation UX — name, credentials, flags",
+        "Adaptive forms: AI asks the right clarifiers",
+        "Expert attestation UX: name, credentials, flags",
         "Evidence states: AI-simulated vs human-verified"
       ],
       gaps: [
         "AI-generated experts are not credible yet",
         "No NewtonX proprietary data in the model",
-        "Simulated panel is directional only — not board-ready",
+        "Simulated panel is directional only, not board-ready",
         "Confidence scores are heuristic, not statistical"
       ]
     }
@@ -274,7 +274,7 @@ export const SLIDES: Slide[] = [
     section: "Product",
     layout: "statement",
     eyebrow: "Credibility today",
-    title: "Adaptive forms — ready for pilot",
+    title: "Adaptive forms are ready for pilot",
     subtitle: "AI asks clarifying questions; the client answers. No synthetic data claims.",
     bullets: [
       "Scopes methodology, segments, and decision stakes",
@@ -287,7 +287,7 @@ export const SLIDES: Slide[] = [
     section: "Product",
     layout: "statement",
     eyebrow: "Credibility gap",
-    title: "AI experts — not production-ready",
+    title: "AI experts are not production-ready",
     subtitle: "Synthetic personas cannot replace verified NewtonX experts in Phase 1.",
     bullets: [
       "POC uses 100% simulated panel to demonstrate speed",
@@ -300,7 +300,7 @@ export const SLIDES: Slide[] = [
     section: "Product",
     layout: "calibration",
     eyebrow: "Persona calibration",
-    title: "Duplicate real experts — learn from the delta",
+    title: "Duplicate real experts and learn from the delta",
     subtitle:
       "Build on existing expert search and survey questionnaires: match a verified expert, run an AI twin on the same questions, compare answers, fine-tune personas.",
     calibrationSteps: [
@@ -311,17 +311,17 @@ export const SLIDES: Slide[] = [
       },
       {
         label: "AI twin predicts",
-        body: "A persona model generates what the system believes that expert would answer — same questions, same scope",
+        body: "A persona model generates what the system believes that expert would answer, using the same questions and scope",
         tone: "ai"
       },
       {
         label: "Compare & score",
-        body: "Prediction vs actual response — error by question type, segment, and seniority. Low delta = higher persona confidence",
+        body: "Prediction vs actual response, with error by question type, segment, and seniority. Low delta = higher persona confidence",
         tone: "neutral"
       },
       {
         label: "Fine-tune & ramp",
-        body: "Calibration data tunes personas and sets when AI share can increase — evidence-based, not arbitrary",
+        body: "Calibration data tunes personas and sets when AI share can increase. Evidence-based, not arbitrary.",
         tone: "success"
       }
     ]
@@ -332,7 +332,7 @@ export const SLIDES: Slide[] = [
     layout: "hybrid-ramp",
     eyebrow: "Hybrid panel",
     title: "AI share ramps with measured confidence",
-    subtitle: "Tunable design — driven by validation outcomes, not a fixed roadmap",
+    subtitle: "Tunable design driven by validation outcomes, not a fixed roadmap",
     rampStages: [
       { pct: "5%", label: "Phase 1 pilot", detail: "AI fills gaps only; 95% real NewtonX experts" },
       { pct: "20%", label: "Phase 2 beta", detail: "Personas calibrated against real expert deltas; A/B before ramping AI share" },
@@ -344,10 +344,10 @@ export const SLIDES: Slide[] = [
     section: "Product",
     layout: "statement",
     eyebrow: "Trust layer",
-    title: "Tier 3 in practice — expert co-signing",
+    title: "Tier 3 in practice: expert co-signing",
     subtitle: "An optional upgrade on any sourced memo: verified experts attest, flag errors, and put their name on the output.",
     bullets: [
-      "Async attestation — not a full SI engagement; minutes, not hours",
+      "Async attestation, not a full SI engagement; minutes, not hours",
       "Evidence label upgrades from sourced → human-verified on co-signed sections",
       "POC proves the UX; Ops capacity and payout model unlock production scale"
     ]
@@ -467,7 +467,7 @@ export const SLIDES: Slide[] = [
           "Prompt/version logging on every client-facing artifact"
         ],
         questions: [
-          "Can calibration run on top of existing survey fielding — no extra expert burden?",
+          "Can calibration run on top of existing survey fielding with no extra expert burden?",
           "What's the minimum retrieval setup before full vector migration?",
           "Who builds and owns automated claim-checking if added post-pilot?"
         ],
@@ -483,10 +483,10 @@ export const SLIDES: Slide[] = [
         ],
         questions: [
           "Which RM workflows today are repeatable enough to automate in v1?",
-          "What would make SI comfortable putting Hub output in a client deck — even labeled?",
+          "What would make SI comfortable putting Hub output in a client deck, even labeled?",
           "Who signs off when calibration error is 'too high' to ramp AI share?"
         ],
-        whyItMatters: "SI reputation is on the line for every output — their rubric becomes the product quality ceiling."
+        whyItMatters: "SI reputation is on the line for every output, so their rubric becomes the product quality ceiling."
       },
       {
         team: "Operations",
@@ -498,10 +498,10 @@ export const SLIDES: Slide[] = [
         ],
         questions: [
           "How many experts can realistically take async validation in the pilot window?",
-          "Does pro-rated pay work for 10–15 minute attestations?",
+          "Does pro-rated pay work for 10-15 minute attestations?",
           "What lead time is needed before opening self-serve beyond invite-only?"
         ],
-        whyItMatters: "Expert queue is already backlogged — launching without Ops breaks the verification promise."
+        whyItMatters: "Expert queue is already backlogged. Launching without Ops breaks the verification promise."
       },
       {
         team: "Marketing",
@@ -513,7 +513,7 @@ export const SLIDES: Slide[] = [
         ],
         questions: [
           "How should 'AI' appear on the website for pharma and financial services accounts?",
-          "Is 'Verified AI' the right frame — or something more conservative?",
+          "Is 'Verified AI' the right frame, or should it be something more conservative?",
           "What proof points can be used before full calibration data exists?"
         ],
         whyItMatters: "Wrong messaging triggers compliance calls and blocks the exact enterprise accounts that matter."
@@ -528,7 +528,7 @@ export const SLIDES: Slide[] = [
         ],
         questions: [
           "Which lost-deal accounts are right for a pilot re-engagement?",
-          "Does hybrid ARR comp solve the 'small deal' concern — or need a different structure?",
+          "Does hybrid ARR comp solve the 'small deal' concern, or need a different structure?",
           "Who owns the account when Hub activity signals SI opportunity?"
         ],
         whyItMatters: "Sales won't lead with Hub if it feels like a downgrade from six-figure SI deals."
@@ -561,17 +561,17 @@ export const SLIDES: Slide[] = [
     section: "Prototype",
     layout: "demo",
     eyebrow: "Prototype",
-    title: "Hub 2.0 POC — flow demonstration",
-    subtitle: "Scope → Brief → Report → Expert verification",
+    title: "Hub 2.0 POC flow demonstration",
+    subtitle: "Scope, brief, report, and expert verification",
     screenshotSlots: [
-      { id: "wizard", label: "Adaptive wizard", caption: "public/screenshots/wizard.png" },
-      { id: "report", label: "Report + evidence labels", caption: "public/screenshots/report.png" },
-      { id: "verify", label: "Expert attestation", caption: "public/screenshots/verify.png" }
+      { id: "wizard", label: "Launch a study", caption: "Adaptive intake clarifies scope before the brief is accepted." },
+      { id: "report", label: "Building your expert research report", caption: "Report generation shows the evidence workflow step by step." },
+      { id: "verify", label: "Review & attest", caption: "Experts review sections, add notes, and submit verification." }
     ],
     bullets: [
-      "Adaptive forms — credible",
-      "AI experts — demo only",
-      "Verification UX — credible path to trust"
+      "Adaptive forms: credible",
+      "AI experts: demo only",
+      "Verification UX: credible path to trust"
     ]
   },
   {
@@ -579,8 +579,8 @@ export const SLIDES: Slide[] = [
     section: "Close",
     layout: "close",
     eyebrow: "Takeaway",
-    title: "Fast exploration and verified escalation — same product, two moments.",
-    subtitle: "The POC shows the journey works. Production credibility depends on expert calibration, proprietary data, and co-signing — in that order.",
+    title: "Fast exploration and verified escalation in one product.",
+    subtitle: "The POC shows the journey works. Production credibility depends on expert calibration, proprietary data, and co-signing, in that order.",
     bullets: [
       "Adaptive intake is shippable today",
       "AI personas earn trust only against real expert answers",
