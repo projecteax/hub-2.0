@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm install --prefix presentation --no-save && npm run presentation:build && node scripts/copy-presentation.mjs && next build",
+    "build": "npm install --prefix presentation --include=dev --no-save && npm run presentation:build && node scripts/copy-presentation.mjs && next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
