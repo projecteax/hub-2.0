@@ -136,7 +136,6 @@ export const SLIDES: Slide[] = [
         items: [
           "Lisa: freemium under $500/mo. Unit economics don't work at MVP",
           "Derek: API and open-source matching. Expert graph stays proprietary",
-          "Anika: fast stats with a methodology badge. Indefensible under scrutiny",
           "David Kim: same-day live calls. Expert network play, not self-serve memo"
         ]
       }
