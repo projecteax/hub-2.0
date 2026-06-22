@@ -6,11 +6,9 @@ import {
   Database,
   FileSearch,
   Megaphone,
-  ShieldCheck,
   Sparkles,
   TrendingUp,
-  Users,
-  Zap
+  Users
 } from "lucide-react";
 
 export type SlideLayout =
@@ -103,33 +101,6 @@ export const SLIDES: Slide[] = [
     subtitle: "Product plan, feedback synthesis, and prototype"
   },
   {
-    id: "agenda",
-    section: "Intro",
-    layout: "agenda",
-    eyebrow: "Agenda",
-    title: "Presentation outline",
-    bullets: [
-      "User feedback synthesis",
-      "Product plan: MVP, credibility, persona calibration",
-      "Quarterly product roadmap",
-      "Cross-functional execution",
-      "Prototype walkthrough"
-    ]
-  },
-  {
-    id: "assignment",
-    section: "Context",
-    layout: "statement",
-    eyebrow: "Context",
-    title: "Hub as a self-serve research platform",
-    subtitle: "Synthetic + human research for fast exploration and verified escalation.",
-    bullets: [
-      "Scope the question with adaptive intake",
-      "Deliver a synthesized memo with clear evidence tier",
-      "Escalate to human experts when stakes rise"
-    ]
-  },
-  {
     id: "problem-data",
     section: "Context",
     layout: "stats",
@@ -144,36 +115,31 @@ export const SLIDES: Slide[] = [
   {
     id: "evaluation-method",
     section: "Feedback",
-    layout: "evaluation",
+    layout: "split",
     eyebrow: "Feedback synthesis",
-    title: "How 14 user voices were weighed",
-    subtitle: "Pain mapped to win/loss data, not a popularity vote",
-    evaluationSteps: [
+    title: "Who we built for and who we cut",
+    subtitle: "14 voices filtered through win/loss data, unit economics, and NewtonX credibility",
+    columns: [
       {
-        label: "Group by decision stakes",
-        body: "Fast explorers (Sarah, Natalie) vs. board-grade validators (Catherine, Priya, James): same product, different moments"
+        heading: "Prioritized",
+        tone: "in",
+        items: [
+          "Sarah: directional memo in 48h, upgrade when stakes rise. Maps to timeline losses (34%)",
+          "Natalie: stress-test many hypotheses per week without waiting 5 weeks for SI",
+          "Marcus: adaptive scoping and follow-ups, not a new project per question",
+          "Catherine: expert attestation and evidence labels before board use"
+        ]
       },
       {
-        label: "Align with revenue data",
-        body: "58% of losses tied to speed and budget, with priority on recoverable deal patterns"
-      },
-      {
-        label: "Apply business filters",
-        body: "MVP scope limited to ideas that fit unit economics (~$100/interaction) and protect the expert graph IP"
+        heading: "Deprioritized",
+        tone: "out",
+        items: [
+          "Lisa: freemium under $500/mo. Unit economics don't work at MVP",
+          "Derek: API and open-source matching. Expert graph stays proprietary",
+          "Anika: fast stats with a methodology badge. Indefensible under scrutiny",
+          "David Kim: same-day live calls. Expert network play, not self-serve memo"
+        ]
       }
-    ]
-  },
-  {
-    id: "ladder",
-    section: "Feedback",
-    layout: "ladder",
-    eyebrow: "Core insight",
-    title: "The Speed-Trust Ladder",
-    subtitle: "Different users sit on different rungs, and the product must serve both",
-    items: [
-      { icon: Zap, title: "Explore", body: "Directional answer in 48h for internal planning", tag: "Sarah · Natalie" },
-      { icon: ShieldCheck, title: "Validate", body: "Expert attestation before the board", tag: "Catherine · Priya" },
-      { icon: TrendingUp, title: "Deep dive", body: "Full SI engagement: $30K-$150K+", tag: "Existing motion" }
     ]
   },
   {
@@ -186,13 +152,13 @@ export const SLIDES: Slide[] = [
       {
         icon: Sparkles,
         title: "Adaptive scoping",
-        body: "A thinking partner, not a static form. Marcus & Natalie need fast hypothesis tests.",
+        body: "A thinking partner, not a static form. Marcus and Natalie need fast hypothesis tests.",
         tag: "Build"
       },
       {
         icon: FileSearch,
         title: "Audit trail",
-        body: "Every claim traceable through sources, credentials, and evidence labels. Priya & Greg won't defend data without it.",
+        body: "Every claim traceable through sources, credentials, and evidence labels. Priya and Greg won't defend data without it.",
         tag: "Build"
       },
       {
@@ -210,41 +176,27 @@ export const SLIDES: Slide[] = [
     eyebrow: "Product architecture",
     title: "Three pillars",
     items: [
-      { icon: Sparkles, title: "Adaptive scoping", body: "AI clarifying questions, credible today", tag: "Pillar I ✓" },
-      { icon: Database, title: "NewtonX-grounded synthesis", body: "RAG on proprietary reports + citations", tag: "Pillar II · Phase 1" },
-      { icon: Users, title: "Expert verification", body: "Named experts attest with credentials", tag: "Pillar III ✓ POC" }
+      { icon: Sparkles, title: "Adaptive scoping", body: "AI clarifying questions that turn a raw ask into a structured research brief", tag: "Pillar I" },
+      { icon: Database, title: "NewtonX-grounded synthesis", body: "RAG on proprietary reports with citations and labeled evidence", tag: "Pillar II" },
+      { icon: Users, title: "Expert verification", body: "Named experts attest findings and put credentials on the output", tag: "Pillar III" }
     ]
   },
   {
-    id: "mvp",
-    section: "Product",
-    layout: "split",
-    eyebrow: "MVP scope",
-    title: "Phase 1 pilot: in and out of scope",
-    columns: [
-      {
-        heading: "In scope",
-        tone: "in",
-        items: [
-          "Adaptive wizard + AI brief generation",
-          "Hybrid panel: 95% real experts, 5% AI fill",
-          "Expert calibration: AI twin vs real survey answers",
-          "NewtonX data feed to LLM (curated subset)",
-          "Expert verification marketplace",
-          "Evidence labels + audit trail"
-        ]
-      },
-      {
-        heading: "Out of scope",
-        tone: "out",
-        items: [
-          "Fully AI-generated expert panels",
-          "Full historical RAG library",
-          "Freemium tier under $500/month",
-          "White-label agency channel",
-          "Mobile micro-payout marketplace"
-        ]
-      }
+    id: "demo",
+    section: "Prototype",
+    layout: "demo",
+    eyebrow: "Prototype",
+    title: "Hub 2.0 live walkthrough",
+    subtitle: "Scope, brief, report, and expert verification",
+    screenshotSlots: [
+      { id: "wizard", label: "Launch a study", caption: "Adaptive intake clarifies scope before the brief is accepted." },
+      { id: "report", label: "Building your expert research report", caption: "Report generation shows the evidence workflow step by step." },
+      { id: "verify", label: "Review and attest", caption: "Experts review sections, add notes, and submit verification." }
+    ],
+    bullets: [
+      "Adaptive forms: credible today",
+      "AI experts: demo only",
+      "Verification UX: path to trust"
     ]
   },
   {
@@ -256,7 +208,7 @@ export const SLIDES: Slide[] = [
     subtitle: "Flow is validated; credibility still needs proof",
     pocStatus: {
       proves: [
-        "End-to-end journey: scope → brief → report → verify",
+        "End-to-end journey: scope to brief to report to verify",
         "Adaptive forms: AI asks the right clarifiers",
         "Expert attestation UX: name, credentials, flags",
         "Evidence states: AI-simulated vs human-verified"
@@ -274,12 +226,12 @@ export const SLIDES: Slide[] = [
     section: "Product",
     layout: "statement",
     eyebrow: "Credibility today",
-    title: "Adaptive forms are ready for pilot",
-    subtitle: "AI asks clarifying questions; the client answers. No synthetic data claims.",
+    title: "Adaptive forms are not production-ready yet",
+    subtitle: "The POC is early, but it shows this approach can work: AI asks clarifiers, the client answers, no synthetic data claims.",
     bullets: [
-      "Scopes methodology, segments, and decision stakes",
-      "Structured context passed to every downstream step",
-      "Live in the POC"
+      "Scopes methodology, segments, and decision stakes before any report runs",
+      "Structured context flows into brief generation and downstream steps",
+      "Still needs SI rubric review, edge-case testing, and pilot hardening before we call it shippable"
     ]
   },
   {
@@ -302,25 +254,25 @@ export const SLIDES: Slide[] = [
     eyebrow: "Persona calibration",
     title: "Duplicate real experts and learn from the delta",
     subtitle:
-      "Build on existing expert search and survey questionnaires: match a verified expert, run an AI twin on the same questions, compare answers, fine-tune personas.",
+      "Match a verified expert, run an AI twin on the same questions, compare answers, fine-tune personas.",
     calibrationSteps: [
       {
         label: "Match real expert",
-        body: "NewtonX Graph search selects a verified expert; existing survey / questionnaire flow fields the study",
+        body: "NewtonX Graph search selects a verified expert; existing survey flow fields the study",
         tone: "human"
       },
       {
         label: "AI twin predicts",
-        body: "A persona model generates what the system believes that expert would answer, using the same questions and scope",
+        body: "A persona model generates what the system believes that expert would answer on the same questions",
         tone: "ai"
       },
       {
-        label: "Compare & score",
+        label: "Compare and score",
         body: "Prediction vs actual response, with error by question type, segment, and seniority. Low delta = higher persona confidence",
         tone: "neutral"
       },
       {
-        label: "Fine-tune & ramp",
+        label: "Fine-tune and ramp",
         body: "Calibration data tunes personas and sets when AI share can increase. Evidence-based, not arbitrary.",
         tone: "success"
       }
@@ -348,8 +300,22 @@ export const SLIDES: Slide[] = [
     subtitle: "An optional upgrade on any sourced memo: verified experts attest, flag errors, and put their name on the output.",
     bullets: [
       "Async attestation, not a full SI engagement; minutes, not hours",
-      "Evidence label upgrades from sourced → human-verified on co-signed sections",
+      "Evidence label upgrades from sourced to human-verified on co-signed sections",
       "POC proves the UX; Ops capacity and payout model unlock production scale"
+    ]
+  },
+  {
+    id: "strategy",
+    section: "Product",
+    layout: "statement",
+    eyebrow: "Strategy",
+    title: "The POC proves AI helps shape better research",
+    subtitle: "Adaptive forms are the clearest signal so far: AI clarifies the ask and produces a tighter brief before any synthetic panel runs.",
+    bullets: [
+      "Clients answer follow-up questions they would not have thought to scope on a static form",
+      "The brief captures methodology, segments, and decision stakes in a format SI can review",
+      "PM validation next: concept tests with explorers (Sarah, Natalie) on whether this alone saves scoping time",
+      "Market research: A/B static brief vs adaptive intake on brief quality, time to scope, and pilot willingness to pay"
     ]
   },
   {
@@ -358,7 +324,7 @@ export const SLIDES: Slide[] = [
     layout: "roadmap",
     eyebrow: "Product roadmap",
     title: "Quarterly product roadmap",
-    subtitle: "Current plan, not a promise: each quarter pairs what ships with how it is validated.",
+    subtitle: "Each quarter pairs what ships with how we validate it.",
     horizons: [
       {
         horizon: "Q1",
@@ -543,7 +509,7 @@ export const SLIDES: Slide[] = [
     title: "Ownership & delegation",
     ownership: {
       own: [
-        "Client and expert journey: brief → report → verification",
+        "Client and expert journey: brief to report to verification",
         "MVP scope, phased rollout, and what ships in the pilot",
         "Trust UX: evidence tiers, attestation flow, audit trail",
         "Pilot metrics, success criteria, and go/no-go gates",
@@ -559,35 +525,32 @@ export const SLIDES: Slide[] = [
     }
   },
   {
-    id: "demo",
-    section: "Prototype",
-    layout: "demo",
-    eyebrow: "Prototype",
-    title: "Hub 2.0 POC flow demonstration",
-    subtitle: "Scope, brief, report, and expert verification",
-    screenshotSlots: [
-      { id: "wizard", label: "Launch a study", caption: "Adaptive intake clarifies scope before the brief is accepted." },
-      { id: "report", label: "Building your expert research report", caption: "Report generation shows the evidence workflow step by step." },
-      { id: "verify", label: "Review & attest", caption: "Experts review sections, add notes, and submit verification." }
-    ],
-    bullets: [
-      "Adaptive forms: credible",
-      "AI experts: demo only",
-      "Verification UX: credible path to trust"
-    ]
-  },
-  {
-    id: "close",
-    section: "Close",
-    layout: "close",
-    eyebrow: "Takeaway",
-    title: "Fast exploration and verified escalation in one product.",
-    subtitle: "The POC shows the journey works. Production credibility depends on expert calibration, proprietary data, and co-signing, in that order.",
-    bullets: [
-      "Adaptive intake is shippable today",
-      "AI personas earn trust only against real expert answers",
-      "Human verification is the upgrade path, not a nice-to-have",
-      "Roadmap learns before it scales"
+    id: "gtm",
+    section: "GTM",
+    layout: "split",
+    eyebrow: "Go to market",
+    title: "Go to market strategy",
+    subtitle: "Position, price, and sell without cannibalizing the $120K SI motion Sales already runs",
+    columns: [
+      {
+        heading: "Positioning and pricing",
+        tone: "neutral",
+        items: [
+          "Lead with verified escalation, not \"AI insights in 4 hours.\" Evidenza competes on synthetic speed; NewtonX competes on explore now, attest before the board",
+          "Two SKUs per the product brief: the Survey (AI scoping + brief) and the Research Output (synthesized memo). Sarah explicitly said she would pay separately for directional vs validated",
+          "Unit economics set the floor: ~$50/expert interaction + ~$50 delivery overhead. No freemium race with DataMesh at $199/mo. Pilot: per-project bundle for scoping + directional memo; verification priced as add-on per attestation",
+          "Regulated accounts (James, Catherine): internal-use directional by default; human-verified tier required before anything client-facing"
+        ]
+      },
+      {
+        heading: "Launch customers and SI motion",
+        tone: "in",
+        items: [
+          "First pilot cohort (5-10 accounts): existing SI clients in Enterprise Tech (+44% bookings YoY) plus re-engagement on the 38 lost deals where timeline was the blocker",
+          "Jordan Reeves profile: prospects in active SI cycles who need proof AI is live today, not on a roadmap",
+          "Replicate the motion Sales already trusts: last quarter a $120K SI expansion started as a Hub conversation. AEs lead with scoping; SI owns upgrade when stakes exceed self-serve"
+        ]
+      }
     ]
   }
 ];

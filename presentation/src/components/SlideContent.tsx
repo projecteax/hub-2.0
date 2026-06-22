@@ -275,21 +275,21 @@ function SplitSlide({ slide }: Props) {
   return (
     <SlideFrame>
       <motion.div variants={staggerContainer} initial="hidden" animate="show" className="w-full">
-        <SlideHeader eyebrow={slide.eyebrow} title={slide.title} titleClassName="mb-8" />
-        <SlideBody className="mx-auto grid max-w-4xl gap-5 md:grid-cols-2">
+        <SlideHeader eyebrow={slide.eyebrow} title={slide.title} subtitle={slide.subtitle} titleClassName="mb-4" />
+        <SlideBody className="mx-auto grid max-w-5xl gap-4 md:grid-cols-2">
           {slide.columns?.map((col, ci) => (
             <motion.div
               key={col.heading}
-              className={`rounded-2xl border p-5 text-left ${tones[col.tone ?? "neutral"]}`}
+              className={`rounded-2xl border p-4 text-left ${tones[col.tone ?? "neutral"]}`}
               variants={fadeUp}
               custom={ci + 2}
             >
               <h3 className="mb-3 text-center text-sm font-semibold uppercase tracking-wider text-slate-300">
                 {col.heading}
               </h3>
-              <ul className="space-y-2">
+              <ul className="space-y-2.5">
                 {col.items.map((item) => (
-                  <li key={item} className="flex gap-2 text-sm text-slate-300">
+                  <li key={item} className="flex gap-2 text-xs leading-relaxed text-slate-300 md:text-sm">
                     <span
                       className={`mt-2 h-1 w-1 shrink-0 rounded-full ${col.tone === "in" ? "bg-emerald-400" : "bg-slate-500"}`}
                     />
@@ -385,10 +385,7 @@ function HybridRampSlide({ slide }: Props) {
                   {stage.pct}
                 </div>
                 <div className="flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-semibold text-white">{stage.label}</h3>
-                    <span className="text-xs text-violet-300">AI share</span>
-                  </div>
+                  <h3 className="font-semibold text-white">{stage.label}</h3>
                   <p className="mt-1 text-sm text-slate-400">{stage.detail}</p>
                 </div>
               </div>
@@ -397,12 +394,6 @@ function HybridRampSlide({ slide }: Props) {
               ) : null}
             </motion.div>
           ))}
-        <motion.div className="mx-auto mt-6 flex h-2 max-w-md overflow-hidden rounded-full" variants={fadeUp} custom={6}>
-          <div className="w-[5%] bg-violet-500" title="5% AI" />
-          <div className="w-[15%] bg-violet-400/60" title="ramp" />
-          <div className="flex-1 bg-emerald-500/80" title="human" />
-        </motion.div>
-        <p className="mt-2 text-center text-xs text-slate-500">Violet = AI agents · Green = verified human experts</p>
         </SlideBody>
       </motion.div>
     </SlideFrame>

@@ -45,8 +45,8 @@ Drop PNGs into `public/screenshots/`; see that folder's README.
 | `←` | Previous |
 | `F` | Fullscreen |
 
-## Slides (20)
+## Slides (17)
 
-Feedback synthesis · product plan · roadmap · cross-functional · prototype.
+Feedback synthesis · product plan · prototype demo · roadmap · cross-functional · GTM.
 
 Edit content in `src/slides.ts`.
